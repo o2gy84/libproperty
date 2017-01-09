@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+from waflib.Build import BuildContext
+
+APPNAME = 'libpropery'
+VERSION = '0.0.1'
+
+top = '.'
+out = 'BUILD'
+
+def options(ctx):
+        ctx.load('compiler_cxx')
+
+def configure(ctx):
+    #print('→ configuring the project in ' + ctx.path.abspath())
+    ctx.load('compiler_cxx')
+
+def build(ctx):
+
+    ctx.program(
+            target       = APPNAME,
+            source       = ['main.cpp', 'options.cpp', 'config.cpp', 'utils.cpp', 'settings.cpp',
+                            'settings_storage.cpp'],
+            includes     = ['.'],
+            linkflags    = ['-ggdb'],
+            cxxflags     = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror'],
+    )
