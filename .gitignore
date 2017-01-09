@@ -1,0 +1,7 @@
+src/.waf-1.8*
+src/.lock-waf_linux2_build
+src/BUILD
+src/*.o
+src/*.swp
+*.swp
+*.pyc
