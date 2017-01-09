@@ -4,22 +4,6 @@
 
 #include "settings_storage.hpp"
 
-namespace config
-{
-
-enum class engine_t: uint8_t 
-{
-    UNKNOWN,
-    SELECT,
-    POLL,
-    EPOLL
-};
-
-engine_t string2engine(const std::string &str);
-std::string engine2string(engine_t engine);
-
-}
-
 /*
     Programm config class.
 */
@@ -28,7 +12,9 @@ class Config
 public:
     static Config* impl();
     void load(const std::string &path);
-    void dump() const;
+    void parse(const std::string &config);
+
+    std::string dump() const;
     void destroy();
     std::string usage() const;
 
@@ -61,7 +47,6 @@ private:
 
 private:
     void read(const std::string &path);
-    void parse(const std::string &config);
     void parseFromConfig(AnyItem &item, AnyItem::type_t type, const std::string &text);
 
 private:

@@ -26,22 +26,6 @@ std::string get_default_path()
     return config;
 }
 
-engine_t string2engine(const std::string &str)
-{
-    if (str == "select") return engine_t::SELECT;
-    if (str == "poll") return engine_t::POLL;
-    if (str == "epoll") return engine_t::EPOLL;
-    return engine_t::UNKNOWN;
-}
-
-std::string engine2string(engine_t engine)
-{
-    if (engine == engine_t::SELECT) return "select";
-    if (engine == engine_t::POLL)   return "poll";
-    if (engine == engine_t::EPOLL)  return "epoll";
-    return "unknown";
-}
-
 struct token_t
 {
     token_t() {}
@@ -49,7 +33,6 @@ struct token_t
     std::string value;
     void reset() { key = value = ""; }
 };
-
 
 std::string next_line(const std::string &config, std::string::size_type &prev_pos)
 {
@@ -375,7 +358,7 @@ void Config::parseFromConfig(AnyItem &item, AnyItem::type_t type, const std::str
     }
 }
 
-void Config::dump() const
+std::string Config::dump() const
 {
     std::stringbuf str;
     std::ostream os(&str);
@@ -386,7 +369,7 @@ void Config::dump() const
         os << "\t" << std::setw(16) << std::left << i.second.lkey();
         os << ": " << i.second.value() << std::endl;
     }
-    std::cout << str.str() << std::endl;
+    return str.str();
 }
 
 std::string Config::usage() const

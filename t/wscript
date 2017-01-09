@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+import waflib.Utils
+import os
+import glob
+import ntpath
+from waflib.Tools import waf_unit_test
+
+top = '..'
+boost_name = 'boost%s' % os.getenv('BOOST_VERSION', '156')
+
+def options(ctx):
+    ctx.load('compiler_cxx waf_unit_test')
+
+def configure(ctx):
+    ctx.load('compiler_cxx waf_unit_test')
+
+    ctx.env.INCLUDES_TEST = [
+        ctx.path.find_dir('.').abspath(),
+        ctx.path.find_dir('../src').abspath(),
+        '/usr/include/' + boost_name,
+    ]
+    ctx.env.LIBPATH_TEST = [
+        '/usr/lib64/' + boost_name,
+        '/usr/lib/' + boost_name,
+    ]
+
+    ctx.env.CXXFLAGS_TEST = ['-std=c++11']
+
+def set_exit_code (bld):
+    from waflib import Logs
+    lst = getattr(bld, 'utest_results', [])
+    for (f, code, out, err) in lst:
+        if code:
+            msg = []
+            if out:
+                msg.append('stdout:%s%s' % (os.linesep, out.decode('utf-8', "ignore")))
+                if err:
+                    msg.append('stderr:%s%s' % (os.linesep, err.decode('utf-8', "ignore")))
+                    Logs.pprint('RED', 'stdout:\n%s' % out)
+                    Logs.pprint('RED', 'stderr:\n%s' % err)
+                    bld.fatal("")
+
+def build(bld):
+    bld.objects(
+        target = 'sources',
+        source = ['../src/config.cpp', '../src/options.cpp', '../src/settings.cpp', '../src/settings_storage.cpp', '../src/utils.cpp'],
+        use = 'TEST',
+    )
+
+    for f in glob.glob("*.cpp"):
+        bld.program(
+            features = 'test',
+            target = os.path.splitext(ntpath.basename(f))[0],
+            source = [ntpath.basename(f)],
+            lib = bld.env.StLocLibs + ['boost_unit_test_framework'],
+            use = 'sources TEST'
+        )
+    bld.add_post_fun(waf_unit_test.summary)
+    bld.add_post_fun(set_exit_code)
+

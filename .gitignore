@@ -5,3 +5,4 @@ src/*.o
 src/*.swp
 *.swp
 *.pyc
+.lock-waf_linux2_build
