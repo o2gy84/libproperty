@@ -18,6 +18,7 @@ void init_config(const std::string &path, Config *conf)
     conf->add("test8", "test 8 map", std::map<settings::address_t, settings::shard_t>());
     conf->add("test9", "test 9 map", std::map<std::string, std::string>());
     conf->add("test10", "test 10 map", std::map<int, std::string>());
+    conf->add("test11", "test 11 map", std::map<settings::address_t, settings::shard_t>());
 
     conf->load(path);
     std::cout << conf->dump() << std::endl;
@@ -27,15 +28,20 @@ int main(int argc, char *argv[])
 {
     try
     {
-        Options opt;
-        opt.add("help", "h", "print help and exit", false);
-        opt.add("port", "p", "port to listen to (1025..65536)", 0);
-        opt.add("loglevel", "l", "loglevel (1..5)", 0);
-        opt.add("config", "c", "path to config", "");
-        opt.add("syslog", "", "write logs into syslog", false);
+        Options *opt = Options::impl();
+        opt->add("help", "h", "print help and exit", false);
+        opt->add("port", "p", "port to listen to (1025..65536)", 0);
+        opt->add("loglevel", "l", "loglevel (1..5)", 0);
+        opt->add("config", "c", "path to config", "");
+        opt->add("syslog", "", "write logs into syslog", false);
 
-        opt.parse(argc, argv);
-        std::cout << opt.dump() << std::endl;
+        opt->parse(argc, argv);
+        std::cout << opt->dump() << std::endl;
+        if (opt->get<bool>("help"))
+        {
+            std::cout << opt->usage(argv[0]) << std::endl;
+            return 0;
+        }
 
         init_config("../../test.conf", Config::impl());
         return 0;

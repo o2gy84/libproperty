@@ -163,21 +163,21 @@ std::string skip_comments(const std::string &config)
 
 } // namespace
 
-Config* Config::_self = nullptr;
+Config* Config::m_Self = nullptr;
 
 Config* Config::impl()
 {
-    if (_self == NULL)
+    if (m_Self == NULL)
     {
-        _self = new Config();
+        m_Self = new Config();
     }
-    return _self;
+    return m_Self;
 }
 
 void Config::destroy()
 {
-    delete _self;
-    _self = nullptr;
+    delete m_Self;
+    m_Self = nullptr;
 }
 
 void Config::load(const std::string &path)

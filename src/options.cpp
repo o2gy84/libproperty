@@ -7,6 +7,24 @@
 #include "utils.hpp"
 
 
+Options* Options::m_Self = nullptr;
+
+Options* Options::impl()
+{
+    if (m_Self == NULL)
+    {
+        m_Self = new Options();
+    }
+    return m_Self;
+}
+
+void Options::destroy()
+{
+    delete m_Self;
+    m_Self = nullptr;
+}
+
+
 std::string Options::usage(const std::string &progname) const
 {
     // TODO: for more beautifullity, first print short options,
@@ -80,9 +98,9 @@ void Options::parse(int count, const char *const *args)
 
         if (hyphen_counter == 0 || hyphen_counter > 2)
         {
-            std::cerr << "wrong key: " << args[counter] << std::endl;
+            std::string wk = "wrong key: " + std::string(args[counter]);
             std::cerr << usage(args[0]) << std::endl;
-            exit(-1);
+            throw std::runtime_error(wk);
         }
 
         std::string key = tmp.substr(hyphen_counter, std::string::npos);
@@ -101,27 +119,21 @@ void Options::parse(int count, const char *const *args)
             }
             catch (...)
             {
-                std::cerr << "wrong key: " << args[counter] << std::endl;
+                std::string wk = "wrong key (not registered): " + std::string(args[counter]);
                 std::cerr << usage(args[0]) << std::endl;
-                exit(-1);
+                throw std::runtime_error(wk);
             }
         }
 
         std::pair<SettingItem &, bool> item = m_Storage.find_option_by_long_key(key);
         if (!item.second)
         {
-            std::cerr << "wrong key: " << args[counter] << std::endl;
+            std::string wk = "wrong key (not registered): " + std::string(args[counter]);
             std::cerr << usage(args[0]) << std::endl;
-            exit(-1);
+            throw std::runtime_error(wk);
         }
 
         counter = parseFromProgrammOptions(item.first, counter, count, args);
-    }
-
-    if (get<bool>("help"))
-    {
-        std::cerr << usage(args[0]) << std::endl;
-        exit(0);
     }
 }
 

@@ -160,29 +160,22 @@ test4
     BOOST_CHECK_EQUAL(test3["line2"], 222);
 
     std::map<settings::address_t, settings::shard_t> test4 = conf->get<std::map<settings::address_t, settings::shard_t>>("test4");
-
     BOOST_CHECK_EQUAL(test4.size(), 2);
-    for (auto it = test4.begin(); it != test4.end(); ++it)
     {
-        std::cerr << (it->first).host << ":" << (it->first).port;
-        std::vector<int> shards = it->second.shards;
-    }
-
-    {
-        settings::address_t addr1;
-        addr1.host = "localhost";
-        addr1.port = 111;
-        settings::shard_t shard1 = test4[addr1];
-        static const int expected1[] = {0, 1, 2};
-        BOOST_CHECK_EQUAL_COLLECTIONS(shard1.shards.begin(), shard1.shards.end(), expected1, expected1 + 3);
+        settings::address_t addr;
+        addr.host = "localhost";
+        addr.port = 111;
+        settings::shard_t shard = test4[addr];
+        static const int expected[] = {0, 1, 2};
+        BOOST_CHECK_EQUAL_COLLECTIONS(shard.shards.begin(), shard.shards.end(), expected, expected + 3);
     }
     {
-        settings::address_t addr2;
-        addr2.host = "localhost";
-        addr2.port = 0;
-        settings::shard_t shard2 = test4[addr2];
-        static const int expected2[] = {3, 4, 5};
-        BOOST_CHECK_EQUAL_COLLECTIONS(shard2.shards.begin(), shard2.shards.end(), expected2, expected2 + 3);
+        settings::address_t addr;
+        addr.host = "localhost";
+        addr.port = 0;
+        settings::shard_t shard = test4[addr];
+        static const int expected[] = {3, 4, 5};
+        BOOST_CHECK_EQUAL_COLLECTIONS(shard.shards.begin(), shard.shards.end(), expected, expected + 3);
     }
 }
 

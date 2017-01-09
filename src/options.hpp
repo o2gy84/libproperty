@@ -8,9 +8,13 @@
 class Options
 {
 public:
-    Options() {};
+    static Options* impl();
     void parse(int count, const char *const *args);
+
     std::string dump() const;
+    std::string usage(const std::string &program) const;
+
+    void destroy();
 
     template <typename T>
     void add(const std::string &lk, const std::string &k, const std::string &desc, T&& default_value)
@@ -34,9 +38,15 @@ public:
     }
 
 private:
-    std::string usage(const std::string &program) const;
+    Options() {};
+    Options(const Options &);
+    const Options& operator=(const Options &);
+
+private:
     int parseFromProgrammOptions(SettingItem &item, int cur_counter, int total_opts, const char *const *args);
 
 private:
+    static Options *m_Self;
+
     SettingsStorage m_Storage;
 };

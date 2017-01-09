@@ -15,8 +15,9 @@ public:
     void parse(const std::string &config);
 
     std::string dump() const;
-    void destroy();
     std::string usage() const;
+
+    void destroy();
 
 public:
     template <typename T>
@@ -50,7 +51,7 @@ private:
     void parseFromConfig(AnyItem &item, AnyItem::type_t type, const std::string &text);
 
 private:
-    static Config *_self;
+    static Config *m_Self;
 
     SettingsStorage m_Storage;
 };
