@@ -351,10 +351,21 @@ std::string Config::dump() const
     std::stringbuf str;
     std::ostream os(&str);
 
+    size_t max_item_len = 16;
+    for (const auto &i : m_Storage.items())
+    {
+        if (i.second.lkey().size() > max_item_len)
+        {
+            max_item_len = i.second.lkey().size();
+        }
+    }
+
+    ++max_item_len;
+
     os << "Config dump: " << std::endl;
     for (const auto &i : m_Storage.items())
     {
-        os << "\t" << std::setw(16) << std::left << i.second.lkey();
+        os << "\t" << std::setw(max_item_len) << std::left << i.second.lkey();
         os << ": " << i.second.value() << std::endl;
     }
     return str.str();
