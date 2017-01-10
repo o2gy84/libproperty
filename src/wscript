@@ -3,7 +3,8 @@
 
 from waflib.Build import BuildContext
 
-APPNAME = 'libpropery'
+APPNAME = 'property.exe'
+LIBNAME = 'property'
 VERSION = '0.0.1'
 
 top = '.'
@@ -20,8 +21,15 @@ def build(ctx):
 
     ctx.program(
             target       = APPNAME,
-            source       = ['main.cpp', 'options.cpp', 'config.cpp', 'utils.cpp', 'settings.cpp',
-                            'settings_storage.cpp'],
+            source       = ['main.cpp'],
+            includes     = ['.'],
+            linkflags    = ['-ggdb'],
+            cxxflags     = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror'],
+            use          = [LIBNAME],
+    )
+    ctx.stlib(
+            target       = LIBNAME,
+            source       = ['options.cpp', 'config.cpp', 'utils.cpp', 'settings.cpp', 'settings_storage.cpp'],
             includes     = ['.'],
             linkflags    = ['-ggdb'],
             cxxflags     = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror'],
