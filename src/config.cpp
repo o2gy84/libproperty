@@ -13,19 +13,6 @@
 namespace config
 {
 
-std::string get_default_path()
-{
-    uid_t uid = geteuid();
-    struct passwd *pw = getpwuid(uid);
-
-    if (!pw)
-    {
-        return "";
-    }
-    std::string config = std::string(pw->pw_dir) + "/.o2proxy.conf";
-    return config;
-}
-
 struct token_t
 {
     token_t() {}
@@ -185,7 +172,7 @@ void Config::load(const std::string &path)
     std::string real_path = path;
     if (real_path.empty())
     {
-        real_path = config::get_default_path();
+        // TODO: what can we do in this case?
     }
 
     read(real_path);
@@ -193,9 +180,13 @@ void Config::load(const std::string &path)
 
 void Config::read(const std::string &path)
 {
-    if (path.empty()) return;
+    if (path.empty())
+    {
+        std::cerr << "path to config is empty" << std::endl;
+        return;
+    }
 
-    std::cerr << "read config: " << path << std::endl;
+    std::cout << "read config: " << path << std::endl;
 
     std::ifstream ifs(path.c_str());
     if (!ifs.good())
