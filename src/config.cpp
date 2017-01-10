@@ -36,7 +36,7 @@ struct token_t
 
 std::string next_line(const std::string &config, std::string::size_type &prev_pos)
 {
-    while (config[prev_pos] == '\n')
+    while (prev_pos < config.size() && config[prev_pos] == '\n')
     {
         ++prev_pos;
     }

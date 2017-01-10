@@ -24,6 +24,12 @@ void init_config(const std::string &path, Config *conf)
     std::cout << conf->dump() << std::endl;
 }
 
+void clear()
+{
+    Options::impl()->destroy();
+    Config::impl()->destroy();
+}
+
 int main(int argc, char *argv[])
 {
     try
@@ -40,15 +46,19 @@ int main(int argc, char *argv[])
         if (opt->get<bool>("help"))
         {
             std::cout << opt->usage(argv[0]) << std::endl;
+            clear();
             return 0;
         }
 
         init_config("../../test.conf", Config::impl());
+        clear();
         return 0;
     }
     catch (const std::exception &e)
     {
         std::cerr << "terminated: " << e.what() << std::endl;
     }
+
+    clear();
     return 0;
 }
