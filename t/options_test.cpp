@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(test8)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
 }
 
 BOOST_AUTO_TEST_CASE(test9)
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE(test9)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
 }
 
 BOOST_AUTO_TEST_CASE(test10)
@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE(test10)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
 }
 
 BOOST_AUTO_TEST_CASE(test11)
@@ -194,7 +194,7 @@ BOOST_AUTO_TEST_CASE(test11)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
 }
 
 
@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE(test12)
     {
     }
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 0);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 0);
 }
 
 BOOST_AUTO_TEST_CASE(test13)
@@ -239,7 +239,7 @@ BOOST_AUTO_TEST_CASE(test13)
     {
     }
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 0);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 0);
 }
 
 BOOST_AUTO_TEST_CASE(test14)
@@ -261,7 +261,7 @@ BOOST_AUTO_TEST_CASE(test14)
     {
     }
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 0);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 0);
 }
 
 
@@ -280,7 +280,7 @@ BOOST_AUTO_TEST_CASE(test15)
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
     BOOST_CHECK_EQUAL(opt->get<int>("port"), 7777);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
 }
 
 BOOST_AUTO_TEST_CASE(test16)
@@ -299,7 +299,7 @@ BOOST_AUTO_TEST_CASE(test16)
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<bool>("help"), true);
     BOOST_CHECK_EQUAL(opt->get<int>("port"), 7777);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
     BOOST_CHECK_EQUAL(opt->get<std::string>("path"), "/etc/wow.conf");
 }
 
@@ -335,7 +335,7 @@ BOOST_AUTO_TEST_CASE(test18)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<int>("port"), 7777);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
     BOOST_CHECK_EQUAL(opt->get<std::string>("config"), "/etc/wow.conf");
 }
 
@@ -353,7 +353,7 @@ BOOST_AUTO_TEST_CASE(test19)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<int>("port"), 7777);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
     BOOST_CHECK_EQUAL(opt->get<std::string>("config"), "/etc/wow.conf");
 }
 
@@ -371,7 +371,7 @@ BOOST_AUTO_TEST_CASE(test20)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<int>("port"), 7777);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
     BOOST_CHECK_EQUAL(opt->get<std::string>("config"), "/etc/wow.conf");
 }
 
@@ -389,7 +389,7 @@ BOOST_AUTO_TEST_CASE(test21)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<int>("port"), 7777);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
     BOOST_CHECK_EQUAL(opt->get<std::string>("config"), "/etc/wow.conf");
 }
 
@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_CASE(test22)
 
     opt->parse(n, argv);
     BOOST_CHECK_EQUAL(opt->get<int>("port"), 7777);
-    BOOST_CHECK_EQUAL(opt->get<bool>("loglevel"), 5);
+    BOOST_CHECK_EQUAL(opt->get<int>("loglevel"), 5);
     BOOST_CHECK_EQUAL(opt->get<std::string>("config"), "/etc/wow.conf");
 
     bool it_throws = false;
