@@ -2,4 +2,4 @@ all: world
 
 world:
 	@ python ./waf configure
-	@ python ./waf
+	@ python ./waf -v

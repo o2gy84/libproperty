@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         opt->add("help", "h", "print help and exit", false);
         opt->add("port", "p", "port to listen to (1025..65536)", 0);
         opt->add("loglevel", "l", "loglevel (1..5)", 0);
-        opt->add("config", "c", "path to config", "");
+        opt->add("config", "c", "path to config", "../../test.conf");
         opt->add("syslog", "", "write logs into syslog", false);
 
         opt->parse(argc, argv);
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
             return 0;
         }
 
-        init_config("../../test.conf", Config::impl());
+        init_config(opt->get<std::string>("config"), Config::impl());
         clear();
         return 0;
     }
