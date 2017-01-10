@@ -91,37 +91,58 @@ Usage: ./libpropery -c -h -l -p --syslog
  - std::vector (with T = any from above)
  - std::map    (with K and T = any from above)
  
-address_t, file_t, shard_t: see in https://github.com/o2gy84/libproperty/blob/master/src/settings.hpp
+*see address_t, file_t, shard_t in* [extended properties](src/ext_properties.hpp).
  
 Example of config:
 ```
 #comment
-int_val 7788
-double_val 3.14789
+ # any line started from '#' is comment
 
-string_val 127.0.0.1
-address_val 127.0.0.1:443
+# int
+port 7788
 
-vector_int 1, 10,  100
-vector_string      string1,        string2
+# double
+test3 3.14789
 
-path_val /home/v.mogilin/pwd
-shard_val 0-3,4, 5, 6,  7-9
+# string
+unused_key unused_val
+local_address 127.0.0.1
 
-map1
+# std::vector<int>
+test1 1,10, 100
+
+# std::vector<std::string>
+test2      string1,        string2
+
+# settings::address_t
+local_address2 127.0.0.1:443
+test4 abc:443
+
+# settings::file_t
+test5 /home/v.mogilin/pwd
+
+# settings::shard_t
+test6 0-3,4, 5, 6,  7-9
+
+# std::vector<settings::address_t>
+test61    localhost:3333, localhost:3334
+
+# std::map<std::string, std::string>
+test7
 {
     # comment
     key1_string val1_string
 }
 
-map2
+# std::map<settings::address_t, settings::shard_t>
+test8
 {
-    localhost:111 0,1,2
-    localhost 3-5
+    abc:443 0-3, 4,5
+    127.0.0.1 6-9
 }
 
-map3 {a b}
-map4 {
+# std::map<int, std::string>
+test10 {
     1 xxx
     2 vvv
 }
@@ -133,7 +154,10 @@ So there are:
  
 
 ### More examples
-See more usage examples in unittests: https://github.com/o2gy84/libproperty/tree/master/t
+See more usage examples in:
+ - [main.cpp](src/main.cpp)
+ - [config unittests](t/config_test.cpp)
+ - [options unittests](t/options_test.cpp)
 
 ### Authors
 - Victor Mogilin (o2gy84@gmail.com)
