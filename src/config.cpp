@@ -1,6 +1,3 @@
-#include <pwd.h>
-#include <unistd.h>
-
 #include <vector>
 #include <fstream>
 #include <sstream>
