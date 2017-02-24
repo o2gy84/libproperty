@@ -14,6 +14,7 @@ void init_config(const std::string &path, Config *conf)
     conf->add("test4", "test 4 address", settings::address_t());
     conf->add("test5", "test 5 file", settings::file_t());
     conf->add("test6", "test 6 shards", settings::shard_t());
+    conf->add("test61", "test 61 address", std::vector<settings::address_t>());
     conf->add("test7", "test 7 map", std::map<std::string, std::string>());
     conf->add("test8", "test 8 map", std::map<settings::address_t, settings::shard_t>());
     conf->add("test9", "test 9 map", std::map<std::string, std::string>());
