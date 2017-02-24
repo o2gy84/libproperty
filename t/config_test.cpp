@@ -3,10 +3,20 @@
 
 #include <boost/test/unit_test.hpp>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <map>
 
 #include "config.hpp"
+
+void touch_file(const std::string &name)
+{
+    bool ok = static_cast<bool>(std::ofstream(name).put('a'));
+    if (!ok)
+    {
+        throw std::runtime_error("can't open file");
+    }
+}
 
 BOOST_AUTO_TEST_CASE(simple_values)
 {
@@ -21,11 +31,13 @@ pi 3.14
 address 127.0.0.1:443
 address2 127.0.0.2
 
-path /etc/hosts
+path unittest.conf
 
 shards 0, 2, 1, 3-5
     )";
     
+    std::string unittest_conf = "unittest.conf";
+
     conf->add("port", "test int", 7788);
     conf->add("pi", "test double", 0.);
     conf->add("engine", "test string", "epoll");
@@ -34,7 +46,9 @@ shards 0, 2, 1, 3-5
     conf->add("path", "test file", settings::file_t());
     conf->add("shards", "test shards", settings::shard_t());
 
+    touch_file(unittest_conf);
     conf->parse(config);
+    std::remove(unittest_conf.c_str());
 
     BOOST_CHECK_EQUAL(conf->get<int>("port"), 9999);
     BOOST_CHECK_EQUAL(conf->get<std::string>("engine"), "poll");
@@ -46,8 +60,9 @@ shards 0, 2, 1, 3-5
     BOOST_CHECK_EQUAL(conf->get<settings::address_t>("address2").host, "127.0.0.2");
     BOOST_CHECK_EQUAL(conf->get<settings::address_t>("address2").port, 0);
 
-    BOOST_CHECK_EQUAL(conf->get<settings::file_t>("path").name, "/etc/hosts");
-    BOOST_CHECK(conf->get<settings::file_t>("path").content.size() > 0);
+    BOOST_CHECK_EQUAL(conf->get<settings::file_t>("path").name, unittest_conf);
+    BOOST_CHECK_EQUAL(conf->get<settings::file_t>("path").content, "a");
+    BOOST_CHECK(conf->get<settings::file_t>("path").content.size() == 1);
 
     static const int arr[] = {0, 1, 2, 3, 4, 5};
     std::vector<int> conf_shards = conf->get<settings::shard_t>("shards").shards;
