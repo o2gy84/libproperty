@@ -119,7 +119,7 @@ local_address2 127.0.0.1:443
 test4 abc:443
 
 # settings::file_t
-test5 /home/v.mogilin/pwd
+test5 /etc/test.conf
 
 # settings::shard_t
 test6 0-3,4, 5, 6,  7-9
