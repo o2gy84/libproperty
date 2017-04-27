@@ -183,8 +183,6 @@ void Config::read(const std::string &path)
         return;
     }
 
-    std::cout << "read config: " << path << std::endl;
-
     std::ifstream ifs(path.c_str());
     if (!ifs.good())
     {

@@ -51,6 +51,8 @@ int main(int argc, char *argv[])
             return 0;
         }
 
+        std::cout << "read config: " << opt->get<std::string>("config") << std::endl;
+
         init_config(opt->get<std::string>("config"), Config::impl());
         clear();
         return 0;
