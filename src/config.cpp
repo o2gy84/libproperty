@@ -207,7 +207,8 @@ void Config::parse(const std::string &_config)
         std::pair<SettingItem &, bool> item = m_Storage.find_option_by_long_key(token.key);
         if (!item.second)
         {
-            std::cout << "unused key in config: " << token.key << std::endl;
+            // TODO: save all unused keys? show them in dump?
+            // unused key in config - token.key
             continue;
         }
 
