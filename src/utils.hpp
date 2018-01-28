@@ -16,4 +16,4 @@ namespace utils
     std::string lowercased(const std::string &str);
     std::string trimmed(std::string s);
 
-}
+}   // namespace utils

@@ -42,7 +42,7 @@ public:
     }
 
 private:
-    Config() {};
+    Config() {}
     Config(const Config &);
     const Config& operator=(const Config &);
 

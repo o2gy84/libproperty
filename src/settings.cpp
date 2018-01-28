@@ -299,46 +299,77 @@ std::ostream& operator<<(std::ostream& os, const AnyItem& item)
 {
     switch (item.m_Type)
     {
-        case AnyItem::BOOL:      { os << std::boolalpha << item.get<bool>(); break; }
-        case AnyItem::INT:       { os << item.get<int>(); break; }
-        case AnyItem::DOUBLE:    { os << item.get<double>(); break; }
-        case AnyItem::STRING:    { os << item.get<std::string>(); break; }
-        case AnyItem::ADDRESS:   { settings::address_t a = item.get<settings::address_t>(); os << a.host << ":" << a.port; break; }
-        case AnyItem::FILE:      { settings::file_t f = item.get<settings::file_t>(); os << f.name << ", " << f.content.size() << " bytes"; break; }
-        case AnyItem::SHARD:     {
-                                    settings::shard_t s = item.get<settings::shard_t>();
-                                    os << "total: " << s.shards.size() << "; shards list: ";
-                                    for (size_t i = 0; i < s.shards.size(); ++i)
-                                    {
-                                        if (i != 0) os << ", ";
-                                        os << s.shards[i];
-                                    }
-                                    break;
-                                 }
-        case AnyItem::VECTOR:    {
-                                    os << "[";
-                                    for (size_t i = 0; i < item.m_Ptr.v_vector->size(); ++i)
-                                    {
-                                        if (i != 0) os << ", ";
-                                        os << item.m_Ptr.v_vector->at(i);
-                                    }
-                                    os << "]";
-                                    break;
-                                 }
-        case AnyItem::MAP:    {
-                                    int counter = 0;
-                                    os << "{";
-                                    for (auto it = item.m_Ptr.v_map->begin(); it != item.m_Ptr.v_map->end(); ++it)
-                                    {
-                                        if (counter++ != 0) os << ", ";
-                                        os << it->first << " => " << it->second;
-                                    }
-                                    os << "}";
-                                    break;
-                                 }
-
-        default:                 { os << "nil"; break; }
+        case AnyItem::BOOL:
+        {
+            os << std::boolalpha << item.get<bool>();
+            break;
+        }
+        case AnyItem::INT:
+        {
+            os << item.get<int>();
+            break;
+        }
+        case AnyItem::DOUBLE:
+        {
+            os << item.get<double>();
+            break;
+        }
+        case AnyItem::STRING:
+        {
+            os << item.get<std::string>();
+            break;
+        }
+        case AnyItem::ADDRESS:
+        {
+            settings::address_t a = item.get<settings::address_t>();
+            os << a.host << ":" << a.port;
+            break;
+        }
+        case AnyItem::FILE:
+        {
+            settings::file_t f = item.get<settings::file_t>();
+            os << f.name << ", " << f.content.size() << " bytes";
+            break;
+        }
+        case AnyItem::SHARD:
+        {
+            settings::shard_t s = item.get<settings::shard_t>();
+            os << "total: " << s.shards.size() << "; shards list: ";
+            for (size_t i = 0; i < s.shards.size(); ++i)
+            {
+                if (i != 0) os << ", ";
+                os << s.shards[i];
+            }
+            break;
+        }
+        case AnyItem::VECTOR:
+        {
+            os << "[";
+            for (size_t i = 0; i < item.m_Ptr.v_vector->size(); ++i)
+            {
+                if (i != 0) os << ", ";
+                os << item.m_Ptr.v_vector->at(i);
+            }
+            os << "]";
+            break;
+        }
+        case AnyItem::MAP:
+        {
+            int counter = 0;
+            os << "{";
+            for (auto it = item.m_Ptr.v_map->begin(); it != item.m_Ptr.v_map->end(); ++it)
+            {
+                if (counter++ != 0) os << ", ";
+                os << it->first << " => " << it->second;
+            }
+            os << "}";
+            break;
+        }
+        default:
+        {
+            os << "nil";
+            break;
+        }
     }
     return os;
 }
-

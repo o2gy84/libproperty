@@ -1,6 +1,7 @@
+#include <string.h>
+
 #include <iostream>
 #include <algorithm>
-#include <string.h>
 
 #include "utils.hpp"
 
@@ -9,7 +10,10 @@ namespace utils
     std::string int2ipv4(uint32_t ip)
     {
         char buf[128];
-        snprintf(buf, sizeof(buf), "%u.%u.%u.%u", ip&0xFF, (ip&0xFF00) >> 8, (ip&0xFF0000) >> 16, (ip&0xFF000000) >> 24);
+        snprintf(buf, sizeof(buf), "%u.%u.%u.%u", ip&0xFF,
+                                                  (ip&0xFF00) >> 8,
+                                                  (ip&0xFF0000) >> 16,
+                                                  (ip&0xFF000000) >> 24);
         return buf;
     }
 
@@ -37,7 +41,6 @@ namespace utils
         }
 
         return strs;
-
     }
 
     std::vector<std::string> split(const std::string &line, const std::string &delimiter)
@@ -112,4 +115,4 @@ namespace utils
         trim(s);
         return s;
     }
-}
+}   // namespace utils

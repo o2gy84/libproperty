@@ -5,32 +5,33 @@
 
 namespace settings
 {
-    struct address_t
-    {
-        uint16_t port;
-        std::string host;
-        bool operator<(const address_t &rhs) const
-        {
-            if (host == rhs.host) return port < rhs.port;
-            return host < rhs.host;
-        }
-    };
 
-    struct file_t
+struct address_t
+{
+    uint16_t port;
+    std::string host;
+    bool operator<(const address_t &rhs) const
     {
-        std::string name;
-        std::string content;
-        bool operator<(const file_t &rhs) const
-        {
-            if (name == rhs.name) return content < rhs.content;
-            return name < rhs.name;
-        }
-    };
+        if (host == rhs.host) return port < rhs.port;
+        return host < rhs.host;
+    }
+};
 
-    struct shard_t
+struct file_t
+{
+    std::string name;
+    std::string content;
+    bool operator<(const file_t &rhs) const
     {
-        std::vector<int> shards;
-        bool operator<(const shard_t &rhs) const { return shards < rhs.shards; }
-    };
+        if (name == rhs.name) return content < rhs.content;
+        return name < rhs.name;
+    }
+};
 
-} // namespace
+struct shard_t
+{
+    std::vector<int> shards;
+    bool operator<(const shard_t &rhs) const { return shards < rhs.shards; }
+};
+
+}   // namespace settings

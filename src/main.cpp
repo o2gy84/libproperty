@@ -1,4 +1,7 @@
 #include <iostream>
+#include <map>
+#include <string>
+#include <vector>
 
 #include "config.hpp"
 #include "options.hpp"

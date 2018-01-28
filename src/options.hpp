@@ -38,7 +38,7 @@ public:
     }
 
 private:
-    Options() {};
+    Options() {}
     Options(const Options &);
     const Options& operator=(const Options &);
 

@@ -145,7 +145,7 @@ std::string skip_comments(const std::string &config)
     return ret;
 }
 
-} // namespace
+}   // namespace config
 
 Config* Config::m_Self = nullptr;
 
@@ -273,7 +273,7 @@ void Config::parseFromConfig(AnyItem &item, AnyItem::type_t type, const std::str
     {
         settings::shard_t shard;
         std::vector<std::string> ranges = utils::split(text, ",");
-        for (const std::string &range: ranges)
+        for (const std::string &range : ranges)
         {
             if (range.find("-") != std::string::npos)
             {

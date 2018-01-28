@@ -18,7 +18,7 @@ std::pair<SettingItem&, bool> SettingsStorage::find_option_by_long_key(const std
     return std::pair<SettingItem&, bool>(item, true);
 }
 
-const SettingItem& SettingsStorage::find_option_by_short_key(const std::string &k) const throw (std::exception)
+const SettingItem& SettingsStorage::find_option_by_short_key(const std::string &k) const
 {
     if (k.empty())
     {

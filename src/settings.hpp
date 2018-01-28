@@ -53,7 +53,7 @@ private:
     // this will be specialized in .cpp
     template <typename T> T get_impl(T *) const;
 
-    //this is overload - not specialization
+    // this is overload - not specialization
     template <typename T> std::vector<T> get_impl(std::vector<T> *) const
     {
         std::vector<T> ret;
@@ -78,7 +78,7 @@ private:
     // this will be specialized in .cpp
     template <typename T> void store_impl(T v, T *);
 
-    //this is overload - not specialization
+    // this is overload - not specialization
     template <typename T> void store_impl(std::vector<T> v, std::vector<T> *)
     {
         m_Ptr.v_vector = new std::vector<AnyItem>();
