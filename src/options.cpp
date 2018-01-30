@@ -30,25 +30,34 @@ void Options::destroy()
 
 std::string Options::usage(const std::string &progname) const
 {
-    // TODO: for more beautifullity, first print short options,
-    //       second - long options
-
     std::stringstream ss;
     ss << "Usage: " << progname;
+
+    std::set<std::string> long_keys;
 
     for (const auto &i : m_Storage.items())
     {
         const SettingItem &item = i.second;
         if (item.key().empty())
         {
-            ss << " --" << item.lkey();
+            long_keys.insert(item.lkey());
         }
         else
         {
             ss << " -" << item.key();
         }
     }
+
+    for (const auto &lkey : long_keys)
+    {
+        ss << " --" << lkey;
+    }
+
     ss << std::endl << std::endl;
+
+    size_t max_item_size = 24;
+    std::map<std::string, std::string> short_keys_desc;
+    std::map<std::string, std::string> long_keys_desc;
 
     for (const auto &i : m_Storage.items())
     {
@@ -57,14 +66,31 @@ std::string Options::usage(const std::string &progname) const
         if (item.key().empty())
         {
             desc = "--" + item.lkey();
+            long_keys_desc[desc] = item.desc();
         }
         else
         {
             desc = "-" + item.key() + " [ --" + item.lkey() + " ] ";
+            short_keys_desc[desc] = item.desc();
         }
 
-        ss << "\t" << std::setw(24) << std::left << desc
-           << ": " << item.desc() << std::endl;
+        if (desc.size() > max_item_size)
+        {
+            max_item_size = desc.size();
+        }
+    }
+
+    max_item_size += 1;
+    for (const auto &pair : short_keys_desc)
+    {
+        ss << "\t" << std::setw(max_item_size) << std::left << pair.first
+           << ": " << pair.second << std::endl;
+    }
+
+    for (const auto &pair : long_keys_desc)
+    {
+        ss << "\t" << std::setw(max_item_size) << std::left << pair.first
+           << ": " << pair.second << std::endl;
     }
 
     return ss.str();
@@ -75,10 +101,21 @@ std::string Options::dump() const
     std::stringbuf str;
     std::ostream os(&str);
 
+    size_t max_item_len = 16;
+    for (const auto &i : m_Storage.items())
+    {
+        if (i.second.lkey().size() > max_item_len)
+        {
+            max_item_len = i.second.lkey().size();
+        }
+    }
+
+    ++max_item_len;
+
     os << "Options dump: " << std::endl;
     for (const auto &i : m_Storage.items())
     {
-        os << "\t" << std::setw(16) << std::left << i.second.lkey();
+        os << "\t" << std::setw(max_item_len) << std::left << i.second.lkey();
         os << ": " << i.second.value() << std::endl;
     }
     return str.str();

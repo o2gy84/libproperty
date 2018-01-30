@@ -52,6 +52,7 @@ private:
 private:
     static Options *m_Self;
 
+    // TODO: hide implementation
     SettingsStorage m_Storage;
 };
 

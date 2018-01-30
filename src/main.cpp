@@ -44,6 +44,8 @@ int main(int argc, char *argv[])
         opt->add("loglevel", "l", "loglevel (1..5)", 0);
         opt->add("config", "c", "path to config", "../../test.conf");
         opt->add("syslog", "", "write logs into syslog", false);
+        opt->add("real_long_option_wow_how_long_it_is", "", "just long option", true);
+        opt->add("wow", "w", "just one wow option", true);
 
         opt->parse(argc, argv);
         std::cout << opt->dump() << std::endl;

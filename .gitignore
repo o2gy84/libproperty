@@ -8,3 +8,4 @@ src/*.swp
 .lock-waf_linux2_build
 t/.waf-1.8*
 t/build/
+tags
