@@ -2,9 +2,13 @@
 
 #include "settings_storage.hpp"
 
+
+namespace libproperty
+{
+
 /*
-    Programm option class.
-*/
+ *    Programm option class.
+ */
 class Options
 {
 public:
@@ -50,3 +54,5 @@ private:
 
     SettingsStorage m_Storage;
 };
+
+}  // namespace libproperty

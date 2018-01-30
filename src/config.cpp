@@ -147,6 +147,9 @@ std::string skip_comments(const std::string &config)
 
 }   // namespace config
 
+namespace libproperty
+{
+
 Config* Config::m_Self = nullptr;
 
 Config* Config::impl()
@@ -386,3 +389,5 @@ std::string Config::usage() const
 
     return ss.str();
 }
+
+}  // namespace libproperty

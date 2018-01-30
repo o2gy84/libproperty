@@ -8,6 +8,8 @@
 #include "utils.hpp"
 
 
+using libproperty::Options;
+
 char **make_argv(const std::string &str, int &n)
 {
     std::vector<std::string> v = utils::split(str, " ");

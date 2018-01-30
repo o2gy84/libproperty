@@ -4,9 +4,13 @@
 
 #include "settings_storage.hpp"
 
+
+namespace libproperty
+{
+
 /*
-    Programm config class.
-*/
+ *   Programm config class.
+ */
 class Config
 {
 public:
@@ -53,5 +57,8 @@ private:
 private:
     static Config *m_Self;
 
+    // TODO: hide implementation
     SettingsStorage m_Storage;
 };
+
+}  // namespace libproperty

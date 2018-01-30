@@ -3,10 +3,10 @@
 #include <string>
 #include <vector>
 
-#include "config.hpp"
-#include "options.hpp"
+#include "libproperty.hpp"
 
-void init_config(const std::string &path, Config *conf)
+
+void init_config(const std::string &path, libproperty::Config *conf)
 {
     conf->add("port", "port to listen to", 7788);
     conf->add("local_address", "local address", "localhost");
@@ -30,15 +30,15 @@ void init_config(const std::string &path, Config *conf)
 
 void clear()
 {
-    Options::impl()->destroy();
-    Config::impl()->destroy();
+    libproperty::Options::impl()->destroy();
+    libproperty::Config::impl()->destroy();
 }
 
 int main(int argc, char *argv[])
 {
     try
     {
-        Options *opt = Options::impl();
+        libproperty::Options *opt = libproperty::Options::impl();
         opt->add("help", "h", "print help and exit", false);
         opt->add("port", "p", "port to listen to (1025..65536)", 0);
         opt->add("loglevel", "l", "loglevel (1..5)", 0);
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
         std::cout << "read config: " << opt->get<std::string>("config") << std::endl;
 
-        init_config(opt->get<std::string>("config"), Config::impl());
+        init_config(opt->get<std::string>("config"), libproperty::Config::impl());
         clear();
         return 0;
     }

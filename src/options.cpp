@@ -7,6 +7,9 @@
 #include "utils.hpp"
 
 
+namespace libproperty
+{
+
 Options* Options::m_Self = nullptr;
 
 Options* Options::impl()
@@ -187,3 +190,5 @@ int Options::parseFromProgrammOptions(SettingItem &item, int cur_counter, int to
     throw std::runtime_error("bad options");
     return -1;
 }
+
+}  // namespace libproperty

@@ -9,6 +9,9 @@
 
 #include "config.hpp"
 
+
+using Config = libproperty::Config;
+
 void touch_file(const std::string &name)
 {
     bool ok = static_cast<bool>(std::ofstream(name).put('a'));
