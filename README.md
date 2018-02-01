@@ -21,9 +21,9 @@ Library does not provide high efficiency, so that the "get()" call in a cycle - 
 
 ### Example of programm options parser
 ```
-#include "options.hpp" 
+#include "libproperty.hpp"
 
-Options *opt = Options::impl();
+libproperty::Options *opt = libproperty::Options::impl();
 opt->add("help", "h", "print help and exit", false);
 opt->add("loglevel", "l", "loglevel (1..5)", 0); 
 opt->add("config", "c", "path to config", ""); 
@@ -43,9 +43,9 @@ std::string config = opt->get<std::string>("config");
 ### Example of config parser
 
 ```
-#include "config.hpp" 
+#include "libproperty.hpp"
 
-Config *conf = Config::impl()
+libproperty::Config *conf = libproperty::Config::impl()
 conf->add("port", "port to listen to", 7788);
 conf->add("pi", "pi value", 3.14);
 conf->add("vector", "test vector", std::vector<std::string>());
