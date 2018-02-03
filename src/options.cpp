@@ -14,7 +14,7 @@ Options* Options::m_Self = nullptr;
 
 Options* Options::impl()
 {
-    if (m_Self == NULL)
+    if (m_Self == nullptr)
     {
         m_Self = new Options();
     }
@@ -131,7 +131,7 @@ void Options::parse(int count, const char *const *args)
 
         std::string tmp(args[counter]);
         size_t hyphen_counter = 0;
-        while (tmp.size() && tmp[hyphen_counter] == '-')
+        while (hyphen_counter < tmp.size() && tmp[hyphen_counter] == '-')
         {
             ++hyphen_counter;
         }
@@ -144,7 +144,7 @@ void Options::parse(int count, const char *const *args)
         }
 
         std::string key = tmp.substr(hyphen_counter, std::string::npos);
-        std::string::size_type eq_pos = key.find("=");
+        std::string::size_type eq_pos = key.find('=');
         if (eq_pos != std::string::npos)
         {
             key = key.substr(0, eq_pos);
@@ -195,7 +195,7 @@ int Options::parseFromProgrammOptions(SettingItem &item, int cur_counter, int to
     std::string value;
 
     std::string tmp(args[cur_counter]);
-    std::string::size_type eq_pos = tmp.find("=");
+    std::string::size_type eq_pos = tmp.find('=');
     if (eq_pos != std::string::npos)
     {
         value = tmp.substr(eq_pos + 1, std::string::npos);
@@ -206,7 +206,7 @@ int Options::parseFromProgrammOptions(SettingItem &item, int cur_counter, int to
     }
     else
     {
-        // TODO: format without space? like " -l5 -I/usr/local/include"
+        // TODO: format without space? like " -l5 -I/usr/local/include"   NOLINT
         if (cur_counter + 1 >= total_opts)
         {
             throw std::runtime_error("bad options");
@@ -230,7 +230,8 @@ int Options::parseFromProgrammOptions(SettingItem &item, int cur_counter, int to
         item.value().store(v);
         return next_args_counter;
     }
-    else if (item.value().type() == AnyItem::STRING)
+
+    if (item.value().type() == AnyItem::STRING)
     {
         item.value().store(value);
         return next_args_counter;

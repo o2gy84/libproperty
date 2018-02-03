@@ -113,7 +113,7 @@ void AnyItem::store_impl<std::string>(std::string v, std::string *)
         delete m_Ptr.v_string;
     }
 
-    m_Ptr.v_string = new std::string(v);
+    m_Ptr.v_string = new std::string(std::move(v));
     m_Type = STRING;
 }
 template <>

@@ -12,7 +12,7 @@ struct address_t
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wpadded"
 #endif
-    uint16_t port;
+    uint16_t port = 0;
     std::string host;
 #if defined __clang__
 #pragma clang diagnostic pop

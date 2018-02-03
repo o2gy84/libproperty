@@ -35,16 +35,19 @@ def build(ctx):
 
     mycxxflags          = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror', '-Wextra', '-Wshadow',]
     mycxxflags         += ['-Wformat=2',]
+    mylinkflags         = ['-ggdb']
 
     if is_clang():
         mycxxflags     += ['-Weverything', '-Wno-c++98-compat', '-Wno-c++98-compat-pedantic', '-Wno-missing-prototypes']
         mycxxflags     += ['-Wno-undefined-func-template', '-Wno-covered-switch-default']
+        mycxxflags     += ['-stdlib=libc++']
+        mylinkflags    += ['-lc++']
 
     ctx.program(
             target       = APPNAME,
             source       = ['main.cpp'],
             includes     = ['.'],
-            linkflags    = ['-ggdb'],
+            linkflags    = mylinkflags,
             cxxflags     = mycxxflags,
             use          = [LIBNAME],
     )
@@ -52,6 +55,6 @@ def build(ctx):
             target       = LIBNAME,
             source       = ['options.cpp', 'config.cpp', 'utils.cpp', 'settings.cpp', 'settings_storage.cpp'],
             includes     = ['.'],
-            linkflags    = ['-ggdb'],
+            linkflags    = mylinkflags,
             cxxflags     = mycxxflags,
     )

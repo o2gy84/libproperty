@@ -25,7 +25,7 @@ std::string next_line(const std::string &config, std::string::size_type &prev_po
         ++prev_pos;
     }
 
-    std::string::size_type cr_pos = config.find("\n", prev_pos);
+    std::string::size_type cr_pos = config.find('\n', prev_pos);
     if (cr_pos == std::string::npos)
     {
         cr_pos = config.size();
@@ -102,14 +102,14 @@ int get_next_token(const std::string &config,
 
     // is map! need find closed '}'
 
-    std::string::size_type close_map_pos = value.find("}");
+    std::string::size_type close_map_pos = value.find('}');
     if (close_map_pos != std::string::npos)
     {
         token.value = value.substr(0, close_map_pos + 1);
         return 1;
     }
 
-    close_map_pos = config.find("}", prev_pos);
+    close_map_pos = config.find('}', prev_pos);
     if (close_map_pos == std::string::npos)
     {
          throw std::runtime_error("invalid config: " + line);
@@ -169,13 +169,12 @@ void Config::destroy()
 
 void Config::load(const std::string &path)
 {
-    std::string real_path = path;
-    if (real_path.empty())
+    if (path.empty())
     {
         // TODO: what can we do in this case?
     }
 
-    read(real_path);
+    read(path);
 }
 
 void Config::read(const std::string &path)
@@ -278,7 +277,7 @@ void Config::parseFromConfig(AnyItem &item, AnyItem::type_t type, const std::str
         std::vector<std::string> ranges = utils::split(text, ",");
         for (const std::string &range : ranges)
         {
-            if (range.find("-") != std::string::npos)
+            if (range.find('-') != std::string::npos)
             {
                 std::vector<std::string> range_bounds = utils::split(range, "-");
                 if (range_bounds.size() != 2)
