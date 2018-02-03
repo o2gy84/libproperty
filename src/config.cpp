@@ -248,7 +248,7 @@ void Config::parseFromConfig(AnyItem &item, AnyItem::type_t type, const std::str
         else if (tmp.size() == 2)
         {
             address.host = tmp[0];
-            address.port = std::stoi(tmp[1]);
+            address.port = static_cast<uint16_t>(std::stoi(tmp[1]));
         }
         else
         {
@@ -367,7 +367,7 @@ std::string Config::dump() const
     os << "Config dump: " << std::endl;
     for (const auto &i : m_Storage.items())
     {
-        os << "\t" << std::setw(max_item_len) << std::left << i.second.lkey();
+        os << "\t" << std::setw(static_cast<int>(max_item_len)) << std::left << i.second.lkey();
         os << ": " << i.second.value() << std::endl;
     }
     return str.str();

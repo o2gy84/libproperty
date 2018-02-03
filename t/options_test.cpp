@@ -329,7 +329,7 @@ BOOST_AUTO_TEST_CASE(test18)
     Options *opt = Options::impl();
 
     int n = 0;
-    char **argv = make_argv("./bin -c=/etc/wow.conf -l 5 --port=7777 ", n);
+    char **argv = make_argv("./bin -c=/etc/wow.conf -l 5 --port=7777", n);
 
     opt->add("loglevel", "l", "loglevel", 0);
     opt->add("port", "p", "port", 0);
@@ -347,7 +347,7 @@ BOOST_AUTO_TEST_CASE(test19)
     Options *opt = Options::impl();
 
     int n = 0;
-    char **argv = make_argv("./bin -c /etc/wow.conf -l 5 --port=7777 ", n);
+    char **argv = make_argv("./bin -c /etc/wow.conf -l 5 --port=7777", n);
 
     opt->add("loglevel", "l", "loglevel", 0);
     opt->add("port", "p", "port", 0);
@@ -365,7 +365,7 @@ BOOST_AUTO_TEST_CASE(test20)
     Options *opt = Options::impl();
 
     int n = 0;
-    char **argv = make_argv("./bin --config=/etc/wow.conf -l 5 --port=7777 ", n);
+    char **argv = make_argv("./bin --config=/etc/wow.conf -l 5 --port=7777", n);
 
     opt->add("loglevel", "l", "loglevel", 0);
     opt->add("port", "p", "port", 0);
@@ -383,7 +383,7 @@ BOOST_AUTO_TEST_CASE(test21)
     Options *opt = Options::impl();
 
     int n = 0;
-    char **argv = make_argv("./bin --config /etc/wow.conf -l 5 --port=7777 ", n);
+    char **argv = make_argv("./bin --config /etc/wow.conf -l 5 --port=7777", n);
 
     opt->add("loglevel", "l", "loglevel", 0);
     opt->add("port", "p", "port", 0);
@@ -401,7 +401,7 @@ BOOST_AUTO_TEST_CASE(test22)
     Options *opt = Options::impl();
 
     int n = 0;
-    char **argv = make_argv("./bin --config /etc/wow.conf -l 5 --port=7777 ", n);
+    char **argv = make_argv("./bin --config /etc/wow.conf -l 5 --port=7777", n);
 
     opt->add("loglevel", "l", "loglevel", 0);
     opt->add("port", "p", "port", 0);

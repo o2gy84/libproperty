@@ -68,7 +68,7 @@ shards 0, 2, 1, 3-5
     BOOST_CHECK(conf->get<settings::file_t>("path").content.size() == 1);
 
     static const int arr[] = {0, 1, 2, 3, 4, 5};
-    std::vector<int> conf_shards = conf->get<settings::shard_t>("shards").shards;
+    std::vector<size_t> conf_shards = conf->get<settings::shard_t>("shards").shards;
     BOOST_CHECK_EQUAL_COLLECTIONS(conf_shards.begin(), conf_shards.end(),
                                     arr, arr + 6);
 }

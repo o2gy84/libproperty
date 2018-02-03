@@ -26,7 +26,8 @@ namespace utils
         while ((pos = line.find(delimiter, prev_pos)) != std::string::npos)
         {
             ++parts;
-            std::string tmp(line.begin() + prev_pos, line.begin() + pos);
+            std::string tmp(
+                line.begin() + static_cast<std::ptrdiff_t>(prev_pos), line.begin() + static_cast<std::ptrdiff_t>(pos));
             strs.emplace_back(tmp);
             prev_pos = pos + delimiter.size();
 
@@ -34,9 +35,9 @@ namespace utils
                 break;
         }
 
-        if (prev_pos + delimiter.size() <= line.size())
+        if (prev_pos <= line.size())
         {
-            std::string tmp(line.begin() + prev_pos, line.end());
+            std::string tmp(line.begin() + static_cast<std::ptrdiff_t>(prev_pos), line.end());
             strs.emplace_back(tmp);
         }
 

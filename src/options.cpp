@@ -83,13 +83,13 @@ std::string Options::usage(const std::string &progname) const
     max_item_size += 1;
     for (const auto &pair : short_keys_desc)
     {
-        ss << "\t" << std::setw(max_item_size) << std::left << pair.first
+        ss << "\t" << std::setw(static_cast<int>(max_item_size)) << std::left << pair.first
            << ": " << pair.second << std::endl;
     }
 
     for (const auto &pair : long_keys_desc)
     {
-        ss << "\t" << std::setw(max_item_size) << std::left << pair.first
+        ss << "\t" << std::setw(static_cast<int>(max_item_size)) << std::left << pair.first
            << ": " << pair.second << std::endl;
     }
 
@@ -115,7 +115,7 @@ std::string Options::dump() const
     os << "Options dump: " << std::endl;
     for (const auto &i : m_Storage.items())
     {
-        os << "\t" << std::setw(max_item_len) << std::left << i.second.lkey();
+        os << "\t" << std::setw(static_cast<int>(max_item_len)) << std::left << i.second.lkey();
         os << ": " << i.second.value() << std::endl;
     }
     return str.str();
@@ -130,7 +130,7 @@ void Options::parse(int count, const char *const *args)
         if (counter >= count) break;
 
         std::string tmp(args[counter]);
-        int hyphen_counter = 0;
+        size_t hyphen_counter = 0;
         while (tmp.size() && tmp[hyphen_counter] == '-')
         {
             ++hyphen_counter;
@@ -174,6 +174,10 @@ void Options::parse(int count, const char *const *args)
         }
 
         counter = parseFromProgrammOptions(item.first, counter, count, args);
+        if (-1 == counter)
+        {
+            throw std::runtime_error("bad options");
+        }
     }
 }
 
@@ -214,7 +218,15 @@ int Options::parseFromProgrammOptions(SettingItem &item, int cur_counter, int to
 
     if (item.value().type() == AnyItem::INT)
     {
-        int v = std::stoi(value);
+        int v;
+        try
+        {
+            v = std::stoi(value);
+        }
+        catch (...)
+        {
+            throw std::runtime_error("bad integer option: " + value);
+        }
         item.value().store(v);
         return next_args_counter;
     }
@@ -224,7 +236,6 @@ int Options::parseFromProgrammOptions(SettingItem &item, int cur_counter, int to
         return next_args_counter;
     }
 
-    throw std::runtime_error("bad options");
     return -1;
 }
 

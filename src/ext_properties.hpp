@@ -8,8 +8,15 @@ namespace settings
 
 struct address_t
 {
+#if defined __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wpadded"
+#endif
     uint16_t port;
     std::string host;
+#if defined __clang__
+#pragma clang diagnostic pop
+#endif
     bool operator<(const address_t &rhs) const
     {
         if (host == rhs.host) return port < rhs.port;
@@ -30,7 +37,7 @@ struct file_t
 
 struct shard_t
 {
-    std::vector<int> shards;
+    std::vector<size_t> shards;
     bool operator<(const shard_t &rhs) const { return shards < rhs.shards; }
 };
 

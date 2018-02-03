@@ -47,7 +47,7 @@ private:
     const Options& operator=(const Options &);
 
 private:
-    int parseFromProgrammOptions(SettingItem &item, int cur_counter, int total_opts, const char *const *args);
+    static int parseFromProgrammOptions(SettingItem &item, int cur_counter, int total_opts, const char *const *args);
 
 private:
     static Options *m_Self;

@@ -12,7 +12,6 @@ class AnyItem
 public:
     enum type_t
     {
-        UNDEF,
         BOOL,
         INT,
         DOUBLE,

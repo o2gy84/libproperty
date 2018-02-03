@@ -117,7 +117,7 @@ void AnyItem::store_impl<std::string>(std::string v, std::string *)
     m_Type = STRING;
 }
 template <>
-void AnyItem::store_impl<const char*>(const char *v, const char**)
+void AnyItem::store_impl<const char*>(const char *v, const char **)
 {
     if (m_Ptr.v_string)
     {
@@ -188,7 +188,6 @@ void AnyItem::store_impl<settings::shard_t>(settings::shard_t v, settings::shard
 
 AnyItem::AnyItem()
 {
-    m_Type = UNDEF;
     m_Ptr.v_bool = nullptr;
 }
 
