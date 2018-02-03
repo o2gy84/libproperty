@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 from waflib.Build import BuildContext
+import os,re
 
 APPNAME = 'property.exe'
 LIBNAME = 'property'
@@ -18,15 +19,32 @@ def configure(ctx):
     ctx.load('compiler_cxx')
     ctx.load('clang_compilation_database')
 
+def is_clang():
+    try:
+        cxx = os.environ['CXX']
+    except:
+        return False
+
+    if re.match('clang.*', cxx):
+        return True
+    return False
 
 def build(ctx):
+    #for attr in dir(ctx):
+        #print("obj.%s = %r" % (attr, getattr(ctx, attr)))
+
+    mycxxflags          = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror', '-Wextra', '-Wshadow',]
+    mycxxflags         += ['-Wformat=2',]
+
+    if is_clang():
+        mycxxflags     += ['-Weverything']
 
     ctx.program(
             target       = APPNAME,
             source       = ['main.cpp'],
             includes     = ['.'],
             linkflags    = ['-ggdb'],
-            cxxflags     = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror'],
+            cxxflags     = mycxxflags,
             use          = [LIBNAME],
     )
     ctx.stlib(
@@ -34,5 +52,5 @@ def build(ctx):
             source       = ['options.cpp', 'config.cpp', 'utils.cpp', 'settings.cpp', 'settings_storage.cpp'],
             includes     = ['.'],
             linkflags    = ['-ggdb'],
-            cxxflags     = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror'],
+            cxxflags     = mycxxflags,
     )

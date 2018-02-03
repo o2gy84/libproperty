@@ -85,9 +85,11 @@ private:
         m_Type = VECTOR;
 
         // it needs to understand what type of elements will stored in vector
-        AnyItem any_tmp;
-        any_tmp.store<T>(T());
-        m_VectorType = any_tmp.type();
+        {
+            AnyItem any_tmp;
+            any_tmp.store<T>(T());
+            m_VectorType = any_tmp.type();
+        }
 
         for (size_t i = 0; i < v.size(); ++i)
         {
@@ -102,14 +104,16 @@ private:
         m_Ptr.v_map = new std::map<AnyItem, AnyItem>();
         m_Type = MAP;
 
-        // it needs to understand what type of elements will stored in vector
-        AnyItem any_key;
-        any_key.store<K>(K());
-        m_MapKeyType = any_key.type();
+        // it needs to understand what type of elements will stored in map
+        {
+            AnyItem any_key;
+            any_key.store<K>(K());
+            m_MapKeyType = any_key.type();
 
-        AnyItem any_val;
-        any_val.store<T>(T());
-        m_MapValueType = any_val.type();
+            AnyItem any_val;
+            any_val.store<T>(T());
+            m_MapValueType = any_val.type();
+        }
 
         for (auto it = v.begin(); it != v.end(); ++it)
         {
@@ -156,8 +160,8 @@ public:
     SettingItem() {}
 
     template<typename T>
-    SettingItem(const std::string &lk, const std::string &k, const std::string &desc, T &&v) :
-        _long_key(lk), _key(k), _description(desc)
+    SettingItem(const std::string &lk, const std::string &k, const std::string &descript, T &&v) :
+        _long_key(lk), _key(k), _description(descript)
     {
         _value.store(std::forward<T>(v));
     }
