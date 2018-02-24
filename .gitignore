@@ -9,3 +9,4 @@ src/*.swp
 t/.waf-1.8*
 t/build/
 tags
+src/compile_commands.json
