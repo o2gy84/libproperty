@@ -13,11 +13,7 @@ out = 'BUILD'
 
 def options(ctx):
         ctx.load('compiler_cxx')
-
-def configure(ctx):
-    #print('→ configuring the project in ' + ctx.path.abspath())
-    ctx.load('compiler_cxx')
-    ctx.load('clang_compilation_database')
+        ctx.add_option('--clang_uses_ext_stdlib', dest = 'clang_uses_ext_stdlib', help = 'Flag to clang use external stdlib')
 
 def is_clang():
     try:
@@ -29,32 +25,42 @@ def is_clang():
         return True
     return False
 
+def configure(ctx):
+    #print('→ configuring the project in ' + ctx.path.abspath())
+    ctx.load('compiler_cxx')
+    ctx.load('clang_compilation_database')
+
+    ctx.env.CXXFLAGS   = ['-ggdb3', '-std=c++11', '-Wall', '-Wpedantic', '-Werror', '-Wextra', '-Wshadow',]
+    ctx.env.CXXFLAGS  += ['-Wformat=2',]
+    ctx.env.LINKFLAGS  = ['-ggdb3']
+
+    if is_clang():
+        ctx.env.CXXFLAGS += ['-Weverything', '-Wno-c++98-compat', '-Wno-c++98-compat-pedantic', '-Wno-missing-prototypes']
+        ctx.env.CXXFLAGS += ['-Wno-undefined-func-template',]
+
+        if ctx.options.clang_uses_ext_stdlib == '1':
+            ctx.env.CXXFLAGS  += ['-stdlib=libstdc++']
+            ctx.env.LINKFLAGS += ['-lstdc++']
+            #mycxxflags     += ['-stdlib=libc++']
+            #mylinkflags    += ['-lc++']
+
+
 def build(ctx):
     #for attr in dir(ctx):
         #print("obj.%s = %r" % (attr, getattr(ctx, attr)))
-
-    mycxxflags          = ['-ggdb', '-std=c++11', '-Wall', '-Wpedantic', '-Werror', '-Wextra', '-Wshadow',]
-    mycxxflags         += ['-Wformat=2',]
-    mylinkflags         = ['-ggdb']
-
-    if is_clang():
-        mycxxflags     += ['-Weverything', '-Wno-c++98-compat', '-Wno-c++98-compat-pedantic', '-Wno-missing-prototypes']
-        mycxxflags     += ['-Wno-undefined-func-template', '-Wno-covered-switch-default']
-        mycxxflags     += ['-stdlib=libc++']
-        mylinkflags    += ['-lc++']
 
     ctx.program(
             target       = APPNAME,
             source       = ['main.cpp'],
             includes     = ['.'],
-            linkflags    = mylinkflags,
-            cxxflags     = mycxxflags,
+            linkflags    = ctx.env.LINKFLAGS,
+            cxxflags     = ctx.env.CXXFLAGS,
             use          = [LIBNAME],
     )
     ctx.stlib(
             target       = LIBNAME,
             source       = ['options.cpp', 'config.cpp', 'utils.cpp', 'settings.cpp', 'settings_storage.cpp'],
             includes     = ['.'],
-            linkflags    = mylinkflags,
-            cxxflags     = mycxxflags,
+            linkflags    = ctx.env.LINKFLAGS,
+            cxxflags     = ctx.env.CXXFLAGS,
     )

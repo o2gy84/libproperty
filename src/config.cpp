@@ -154,7 +154,7 @@ Config* Config::m_Self = nullptr;
 
 Config* Config::impl()
 {
-    if (m_Self == NULL)
+    if (m_Self == nullptr)
     {
         m_Self = new Config();
     }
@@ -260,7 +260,8 @@ void Config::parseFromConfig(AnyItem &item, AnyItem::type_t type, const std::str
         std::ifstream ifs(text.c_str());
         if (!ifs.good())
         {
-            throw std::runtime_error("cannot open file \"" + text + "\"");
+            // TODO: it is bad behavior!!!
+            throw std::runtime_error("config contains FILE setting, but there is no file: \"" + text + "\"");
         }
 
         std::string content((std::istreambuf_iterator<char>(ifs)),

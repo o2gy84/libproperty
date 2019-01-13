@@ -255,7 +255,6 @@ void AnyItem::clone(const AnyItem &rhs)
         case SHARD:     { store(rhs.get<settings::shard_t>()); break; }
         case VECTOR:    { cloneAsVector(rhs); break; }
         case MAP:       { cloneAsMap(rhs); break; }
-        default:        { throw std::runtime_error("not implemented type"); }
     }
 }
 
@@ -290,7 +289,6 @@ AnyItem::~AnyItem()
         case SHARD:     { delete m_Ptr.v_shard; break; }
         case VECTOR:    { delete m_Ptr.v_vector; break; }
         case MAP:       { delete m_Ptr.v_map; break; }
-        default: {}
     }
 }
 
@@ -362,11 +360,6 @@ std::ostream& operator<<(std::ostream& os, const AnyItem& item)
                 os << it->first << " => " << it->second;
             }
             os << "}";
-            break;
-        }
-        default:
-        {
-            os << "nil";
             break;
         }
     }
