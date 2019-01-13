@@ -49,12 +49,12 @@ void AnyItem::insertPair(const std::pair<AnyItem, AnyItem> &pair)
 
 
 template <>
-bool AnyItem::get_impl<bool>(bool *) const
+bool AnyItem::getImpl<bool>(bool *) const
 {
     return *(m_Ptr.v_bool);
 }
 template <>
-void AnyItem::store_impl<bool>(bool v, bool *)
+void AnyItem::storeImpl<bool>(bool v, bool *)
 {
     if (m_Ptr.v_bool)
     {
@@ -66,12 +66,12 @@ void AnyItem::store_impl<bool>(bool v, bool *)
 }
 
 template <>
-int AnyItem::get_impl<int>(int *) const
+int AnyItem::getImpl<int>(int *) const
 {
     return *(m_Ptr.v_int);
 }
 template <>
-void AnyItem::store_impl<int>(int v, int *)
+void AnyItem::storeImpl<int>(int v, int *)
 {
     if (m_Ptr.v_int)
     {
@@ -83,12 +83,12 @@ void AnyItem::store_impl<int>(int v, int *)
 }
 
 template <>
-double AnyItem::get_impl<double>(double *) const
+double AnyItem::getImpl<double>(double *) const
 {
     return *(m_Ptr.v_double);
 }
 template <>
-void AnyItem::store_impl<double>(double v, double *)
+void AnyItem::storeImpl<double>(double v, double *)
 {
     if (m_Ptr.v_double)
     {
@@ -101,12 +101,12 @@ void AnyItem::store_impl<double>(double v, double *)
 
 
 template <>
-std::string AnyItem::get_impl<std::string>(std::string *) const
+std::string AnyItem::getImpl<std::string>(std::string *) const
 {
     return *(m_Ptr.v_string);
 }
 template <>
-void AnyItem::store_impl<std::string>(std::string v, std::string *)
+void AnyItem::storeImpl<std::string>(std::string v, std::string *)
 {
     if (m_Ptr.v_string)
     {
@@ -117,7 +117,7 @@ void AnyItem::store_impl<std::string>(std::string v, std::string *)
     m_Type = STRING;
 }
 template <>
-void AnyItem::store_impl<const char*>(const char *v, const char **)
+void AnyItem::storeImpl<const char*>(const char *v, const char **)
 {
     if (m_Ptr.v_string)
     {
@@ -129,12 +129,12 @@ void AnyItem::store_impl<const char*>(const char *v, const char **)
 }
 
 template <>
-settings::address_t AnyItem::get_impl<settings::address_t>(settings::address_t *) const
+settings::address_t AnyItem::getImpl<settings::address_t>(settings::address_t *) const
 {
     return *(m_Ptr.v_address);
 }
 template <>
-void AnyItem::store_impl<settings::address_t>(settings::address_t v, settings::address_t *)
+void AnyItem::storeImpl<settings::address_t>(settings::address_t v, settings::address_t *)
 {
     if (m_Ptr.v_address)
     {
@@ -148,12 +148,12 @@ void AnyItem::store_impl<settings::address_t>(settings::address_t v, settings::a
 }
 
 template <>
-settings::file_t AnyItem::get_impl<settings::file_t>(settings::file_t *) const
+settings::file_t AnyItem::getImpl<settings::file_t>(settings::file_t *) const
 {
     return *(m_Ptr.v_file);
 }
 template <>
-void AnyItem::store_impl<settings::file_t>(settings::file_t v, settings::file_t *)
+void AnyItem::storeImpl<settings::file_t>(settings::file_t v, settings::file_t *)
 {
     if (m_Ptr.v_file)
     {
@@ -167,12 +167,12 @@ void AnyItem::store_impl<settings::file_t>(settings::file_t v, settings::file_t 
 }
 
 template <>
-settings::shard_t AnyItem::get_impl<settings::shard_t>(settings::shard_t *) const
+settings::shard_t AnyItem::getImpl<settings::shard_t>(settings::shard_t *) const
 {
     return *(m_Ptr.v_shard);
 }
 template <>
-void AnyItem::store_impl<settings::shard_t>(settings::shard_t v, settings::shard_t *)
+void AnyItem::storeImpl<settings::shard_t>(settings::shard_t v, settings::shard_t *)
 {
     if (m_Ptr.v_shard)
     {

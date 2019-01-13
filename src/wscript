@@ -41,8 +41,6 @@ def configure(ctx):
         if ctx.options.clang_uses_ext_stdlib == '1':
             ctx.env.CXXFLAGS  += ['-stdlib=libstdc++']
             ctx.env.LINKFLAGS += ['-lstdc++']
-            #mycxxflags     += ['-stdlib=libc++']
-            #mylinkflags    += ['-lc++']
 
 
 def build(ctx):

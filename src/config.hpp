@@ -37,7 +37,7 @@ public:
     template <typename T>
     T get(const std::string &key) const
     {
-        std::pair<SettingItem &, bool> ret = m_Storage.find_option_by_long_key(key);
+        std::pair<SettingItem &, bool> ret = m_Storage.findOptionByLongKey(key);
         if (!ret.second)
         {
             throw std::runtime_error("no such options: " + key);

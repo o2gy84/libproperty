@@ -154,7 +154,7 @@ void Options::parse(int count, const char *const *args)
         {
             try
             {
-                const SettingItem &item = m_Storage.find_option_by_short_key(key);
+                const SettingItem &item = m_Storage.findOptionByShortKey(key);
                 key = item.lkey();
             }
             catch (...)
@@ -165,7 +165,7 @@ void Options::parse(int count, const char *const *args)
             }
         }
 
-        std::pair<SettingItem &, bool> item = m_Storage.find_option_by_long_key(key);
+        std::pair<SettingItem &, bool> item = m_Storage.findOptionByLongKey(key);
         if (!item.second)
         {
             std::string wk = "wrong key (not registered): " + std::string(args[counter]);

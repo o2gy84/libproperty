@@ -219,6 +219,13 @@ _ERROR_CATEGORIES = [
     'readability/check',
     'readability/constructors',
     'readability/fn_size',
+    'readability/struct_member',
+    'readability/class_member',
+    'readability/class_method',
+    'readability/local_var',
+    'readability/func_name',
+    'readability/arg_name',
+    'readability/file_name',
     'readability/inheritance',
     'readability/multiline_comment',
     'readability/multiline_string',
@@ -1049,6 +1056,73 @@ class _FunctionState(object):
     """Count line in current function body."""
     if self.in_a_function:
       self.lines_in_function += 1
+
+  def CheckLocalVarsNames(self, error, filename, linenum, line):
+    """Report if local var in function body has bad name"""
+    if self.in_a_function:
+      if Match(r'.*[^=]=[^=].*', line):
+        prefix_name = ''
+        code_pieces = Match(r'\s+(.*?)\b(\w+)\s*=.*', line)
+        if code_pieces:
+            prefix_name = code_pieces.group(1)
+            var_name = code_pieces.group(2)
+            if prefix_name == '':
+                return
+            if prefix_name.startswith('const') and var_name.startswith('k'):
+                return
+            if prefix_name.endswith('->') or prefix_name.endswith('.'):
+                return
+            if Match(r'([a-z0-9]+[A-Z]+[a-zA-Z0-9]*)', var_name):
+                error(filename, linenum, 'readability/local_var', 5,
+                  'local variables in a function body should be named in snake_case code style.')
+      else:
+        var_name = ''
+        prefix_name = ''
+        type_name = ''
+        code_pieces = Match(r'\s+([\w:<>]+)\s+.*\b(\w+)\s*{.+};.*', line)                   # std::vector<uint8_t> preprocessedFrame {1, 2, 3};
+        if code_pieces:
+            type_name = code_pieces.group(1)
+            var_name = code_pieces.group(2)
+        else:
+            code_pieces = Match(r'\s+([\w:<>]+)\s+(.*?)\b(\w+)\s*\(.*\)\s*{.*;.*}\s*', line) # uint32_t getBytes() { return bytes; }
+            if code_pieces:
+                return
+
+            code_pieces = Match(r'\s+([\w:<>]+)\s+(.*?)\b(\w+)\s*\(.*;.*', line)            # int badName(10);
+            if code_pieces:
+                type_name = code_pieces.group(1)
+                prefix_name = code_pieces.group(2)
+                var_name = code_pieces.group(3)
+            else:
+                code_pieces = Match(r'\s+([\w:<>]+)\s+.*\b(\w+)\s*\[.+\];.*', line)         # char badArray[10];
+                if code_pieces:
+                    type_name = code_pieces.group(1)
+                    var_name = code_pieces.group(2)
+                else:
+                    code_pieces = Match(r'\s+([\w:<>]+)\s+(.*)\b(\w+)\W*;.*', line)         # char badName;
+                    if code_pieces:
+                        type_name = code_pieces.group(1)
+                        prefix_name = code_pieces.group(2)
+                        var_name = code_pieces.group(3)
+
+        if var_name == '':
+            new_line = ReplaceAll(r'\bconst\b', ' ', line)
+            code_pieces = Match(r'\s+for\s\(\s*([\w:<>]+)&?\s+&?\b(\w+)\s:\s.*', new_line)
+            if code_pieces:
+                type_name = code_pieces.group(1)
+                var_name = code_pieces.group(2)
+
+        if type_name.startswith('const') and var_name.startswith('k'):
+            return
+        if prefix_name.endswith('->') or prefix_name.endswith('.'):
+            return
+        if type_name == 'return' or type_name == 'case':
+            return
+
+        if var_name != '':
+            if Match(r'([a-z0-9]+[A-Z]+[a-zA-Z0-9]*)', var_name):
+                error(filename, linenum, 'readability/local_var', 5,
+                  'local variables in a function body should be named in snake_case code style.')
 
   def Check(self, error, filename, linenum):
     """Report if too many lines in function body.
@@ -3033,16 +3107,128 @@ def IsBlankLine(line):
 
 def CheckForNamespaceIndentation(filename, nesting_state, clean_lines, line,
                                  error):
+  # backup old condition
+  #is_namespace_indent_item = (
+      #len(nesting_state.stack) > 1 and
+      #nesting_state.stack[-1].check_namespace_indentation and
+      #isinstance(nesting_state.previous_stack_top, _NamespaceInfo) and
+      #nesting_state.previous_stack_top == nesting_state.stack[-2])
+
+  # my new condition
   is_namespace_indent_item = (
-      len(nesting_state.stack) > 1 and
+      len(nesting_state.stack) > 0 and
       nesting_state.stack[-1].check_namespace_indentation and
-      isinstance(nesting_state.previous_stack_top, _NamespaceInfo) and
-      nesting_state.previous_stack_top == nesting_state.stack[-2])
+      isinstance(nesting_state.previous_stack_top, _NamespaceInfo))
+
+  if is_namespace_indent_item:
+      num = nesting_state.previous_stack_top.starting_linenum
+      indent_namespace_len = GetIndentLevel(clean_lines.lines[num])
+      indent_cur_line_len = GetIndentLevel(clean_lines.lines[line])
+      if indent_namespace_len == indent_cur_line_len:
+          return
+
+      prev_indent_line = ''
+      for i in range(line, nesting_state.previous_stack_top.starting_linenum, -1):
+        prev_indent_len = GetIndentLevel(clean_lines.lines[i])
+        if prev_indent_len < indent_cur_line_len:
+            prev_indent_line = clean_lines.lines[i]
+            break
+
+      if prev_indent_line != '':
+          if Match(r'.+\(.*\).*{.*}.*', prev_indent_line):
+              pass
+          else:
+              if Match(r'.+\(', prev_indent_line):
+                  return
 
   if ShouldCheckNamespaceIndentation(nesting_state, is_namespace_indent_item,
                                      clean_lines.elided, line):
     CheckItemIndentationInNamespace(filename, clean_lines.elided,
                                     line, error)
+
+
+def ReplaceAllInCycle(pattern, rep, s):
+    while True:
+        new_s = ReplaceAll(pattern, rep, s)
+        if new_s == s:
+            return new_s
+        s = new_s
+
+
+def CheckFunctionArgNames(error, filename, clean_lines, linenum, func_name):
+    """Check function arguments names. """
+    if func_name == '()':
+        return
+
+    line = clean_lines.lines[linenum]
+    lines = line
+
+    if ')' in line:
+        pass
+    else:
+        counter = 0
+        while True:
+            try:
+                counter = counter + 1
+                lines = lines + clean_lines.lines[linenum + counter]
+                if ')' in lines:
+                    break
+            except:
+                return
+
+    args = ''
+    pieces = Match(r'.*?\((.*)\).*', lines)
+    if pieces:
+        args = pieces.group(1)
+
+    if args == '': return
+
+    args = ReplaceAll(r'\bconst\b', ' ', args)
+    parts = args.split(',')
+    for p in parts:
+        p = ReplaceAll(r'^\s*', '', p)
+        p = ReplaceAll(r'\s*$', '', p)
+        p = ReplaceAllInCycle(r'\s\s', ' ', p)
+        p = ReplaceAllInCycle(r'  ', ' ', p)
+
+        if '(' in p or ')' in p:
+            continue
+
+        to_check = p.split(' ')
+
+        size = len(to_check)
+        if size <= 1:
+            continue
+        name = to_check[size - 1]
+
+        if Match(r'^[A-Z]', name) or Match(r'.*[a-z0-9_][A-Z].*', name):
+            error(filename, linenum, 'readability/arg_name', 5,
+                'function argument name should be named in snake_case style')
+            break
+
+def CheckFreeFunctionNames(error, filename, clean_lines, linenum, func_name):
+  """Check free function name. """
+  if func_name == '()':
+      return
+
+  if '::' in func_name:
+      # there is another checks for class members
+      pass
+      #if Match(r'.+?::([a-z0-9]+[A-Z]*[a-zA-Z0-9]*)\(.*', func_name):
+      #    pass
+      #else:
+      #    error(filename, linenum, 'readability/func_name', 5,
+      #        'member function should be named in mixedCase code style.')
+  else:
+      line = clean_lines.lines[linenum]
+      if line.endswith(');'):                # possible someting like: 'int g_Global(10);'
+        return
+      if Match(r'(^[A-Z].*)\(.*', func_name):
+          # should be compatible with unit tests
+          pass
+      elif Match(r'(.*[A-Z]+.*)\(.*', func_name):
+          error(filename, linenum, 'readability/func_name', 5,
+              'free function should be named in snake_case code style.')
 
 
 def CheckForFunctionLengths(filename, clean_lines, linenum,
@@ -3073,7 +3259,7 @@ def CheckForFunctionLengths(filename, clean_lines, linenum,
   joined_line = ''
 
   starting_func = False
-  regexp = r'(\w(\w|::|\*|\&|\s)*)\('  # decls * & space::name( ...
+  regexp = r'(\w(\w|<|>|::|\*|\&|\s)*)\('  # decls * & space::name( ...
   match_result = Match(regexp, line)
   if match_result:
     # If the name is all caps and underscores, figure it's a macro and
@@ -3090,6 +3276,11 @@ def CheckForFunctionLengths(filename, clean_lines, linenum,
       joined_line += ' ' + start_line.lstrip()
       if Search(r'(;|})', start_line):  # Declarations and trivial functions
         body_found = True
+        if not 'typedef' in line:
+            function = Search(r'((\w|:)*)\(', line).group(1)
+            function += '()'
+            CheckFreeFunctionNames(error, filename, clean_lines, linenum, function)
+            CheckFunctionArgNames(error, filename, clean_lines, linenum, function)
         break                              # ... ignore
       elif Search(r'{', start_line):
         body_found = True
@@ -3100,6 +3291,8 @@ def CheckForFunctionLengths(filename, clean_lines, linenum,
             function += parameter_regexp.group(1)
         else:
           function += '()'
+        CheckFreeFunctionNames(error, filename, clean_lines, linenum, function)
+        CheckFunctionArgNames(error, filename, clean_lines, linenum, function)
         function_state.Begin(function)
         break
     if not body_found:
@@ -3111,6 +3304,7 @@ def CheckForFunctionLengths(filename, clean_lines, linenum,
     function_state.End()
   elif not Match(r'^\s*$', line):
     function_state.Count()  # Count non-blank/non-comment lines.
+    function_state.CheckLocalVarsNames(error, filename, linenum, line)
 
 
 _RE_PATTERN_TODO = re.compile(r'^//(\s*)TODO(\(.+?\))?:?(\s|$)?')
@@ -3657,6 +3851,113 @@ def IsDecltype(clean_lines, linenum, column):
   return False
 
 
+def CheckClassOrStructNames(filename, clean_lines, class_info, linenum, error):
+  """Checks for class/struct members names
+
+  Args:
+    filename: The name of the current file.
+    clean_lines: A CleansedLines instance containing the file.
+    class_info: A _ClassInfo objects.
+    linenum: The number of the line to check.
+    error: The function to call with any errors found.
+  """
+
+  # allow use small classes like this: ???
+  # class Point { int x; int y }
+  # if (class_info.last_line - class_info.starting_linenum <= 24 or
+  #    linenum <= class_info.starting_linenum):
+  # return
+
+  # check for current line indent
+  indent_class_len = GetIndentLevel(clean_lines.lines[class_info.last_line])
+  indent_current_line_len = GetIndentLevel(clean_lines.lines[linenum])
+  indent_methods_len = 0
+  for i in range(class_info.last_line + 1, linenum):
+      if Match(r'(\s+)(.*?)\b(\w+)\s*\(', clean_lines.lines[i]):
+          indent_methods_len = GetIndentLevel(clean_lines.lines[i])
+          break
+
+  if indent_methods_len > indent_class_len and indent_current_line_len > indent_methods_len:
+      # possible it is function body inside a class
+      return
+
+  line = clean_lines.lines[linenum]
+  if Match(r'\s*(public|protected|private):', line):
+      return
+  if Match(r'class\s+', line) or Match(r'struct\s+', line) or Match(r'{', line):
+      return
+  if Match(r'\s+using\s+', line) or Match(r'\s+typedef\s+', line) or Match(r'\s+struct\s+', line) or Match(r'\s+class\s+', line):
+      return
+  if Match(r'\s*\w+\s+operator\b.*\(', line):
+      return
+  if len(line) == 0:
+      return
+
+  is_function = True
+  var_name = ''
+  code_pieces = Match(r'\s+([\w:<>]+)\s+(.*?)\b(\w+)\s*\(.*;.*', line)
+  if code_pieces:
+      var_name = code_pieces.group(3)
+  else:
+      is_function = False
+      if Match(r'.*[^=]=[^=].*', line):
+        code_pieces = Match(r'\s+(.*?)\b(\w+)\s*=.*', line)
+        if code_pieces:
+            var_name = code_pieces.group(2)
+            if var_name == 'operator':
+                return
+      else:
+          code_pieces = Match(r'\s+([\w:<>]+)\s+(.*)\b(\w+)\s*;.*', line)
+          if code_pieces:
+            var_name = code_pieces.group(3)
+
+  if var_name == '':
+      return
+
+  if not is_function and Match(r'.*\b(\w+)\s*\(.*', line):
+    # is ctor
+    return
+
+  if class_info.is_struct:
+    if not is_function and Match(r'[a-z0-9]+[A-Z]+[a-zA-Z0-9]*', var_name):
+      error(filename, linenum, 'readability/struct_member', 5,
+          'struct member should be named in snake_case code style.')
+    if not is_function and Match(r'^[A-Z].*', var_name):
+      error(filename, linenum, 'readability/struct_member', 5,
+          'struct member should be named in snake_case code style.')
+    return
+
+  # bellow only class checks
+
+  if is_function and Match(r'(^[A-Z].*).*', var_name):
+    # compatibility with unit test
+    # and also CTOR's
+    return
+
+  if is_function and not Match(r'^[a-z][a-zA-Z0-9]*$', var_name):
+    error(filename, linenum, 'readability/class_method', 5,
+          'class method should be named in mixedCase code style.')
+    return
+
+  if not is_function:
+    if var_name.startswith('m_'):
+        local_var_name = var_name[2:]
+        if not Match(r'^[A-Z][a-zA-Z0-9]*$', local_var_name):
+            if Match(r'^[A-Z][a-zA-Z0-9]*_\d+$', local_var_name):
+                # exception for names like 'm_Q2_1' or 'm_Proto_2'
+                pass
+            else:
+                error(filename, linenum, 'readability/class_member', 5,
+                    'class member should be named in m_CamelCase code style.')
+    else:
+        if var_name.endswith('_') or var_name.startswith('_'):
+            # compatibility with unit tests
+            pass
+        else:
+            error(filename, linenum, 'readability/class_member', 5,
+                'class member name should start with "m_" prefix.')
+
+
 def CheckSectionSpacing(filename, clean_lines, class_info, linenum, error):
   """Checks for additional blank line issues related to sections.
 
@@ -3815,12 +4116,28 @@ def CheckBraces(filename, clean_lines, linenum, error):
 
   # If braces come on one side of an else, they should be on both.
   if Match(r'\s*else\s*', line):
-    prevline = GetPreviousNonBlankLine(clean_lines, linenum)[0]
+    prevline = ''
     nextline = ''
-    try:
-      nextline = clean_lines.elided[linenum + 1]
-    except:
-      pass
+
+    # find the ( after the if
+    pos = line.find('else if')
+    pos = line.find('(', pos)
+
+    if pos > 0:
+      (endline, endline_num, endpos) = CloseExpression(clean_lines, linenum, pos)
+
+      prevline = GetPreviousNonBlankLine(clean_lines, linenum)[0]
+      try:
+        nextline = clean_lines.elided[endline_num + 1]
+      except:
+        pass
+    else:
+      prevline = GetPreviousNonBlankLine(clean_lines, linenum)[0]
+      try:
+        nextline = clean_lines.elided[linenum + 1]
+      except:
+        pass
+
     if Match(r'\s*}\s*', prevline):
       if not Match(r'\s*{\s*', nextline):
         error(filename, linenum, 'readability/braces', 5,
@@ -3829,6 +4146,7 @@ def CheckBraces(filename, clean_lines, linenum, error):
       if Match(r'\s*{\s*', nextline):
         error(filename, linenum, 'readability/braces', 5,
           'If an else has a brace on one side, it should have it on both')
+
 
   # Likewise, an else should never have the else clause on the same line
   if Search(r'\belse [^\s{]', line) and not Search(r'\belse if\b', line):
@@ -3856,6 +4174,11 @@ def CheckBraces(filename, clean_lines, linenum, error):
       # This could be a multiline if condition, so find the end first.
       pos = if_match.end() - 1
       (endline, endlinenum, endpos) = CloseExpression(clean_lines, linenum, pos)
+
+    # it is possibly macro
+    if (Match(r'\s*\\', endline[endpos:])):
+        return
+
     # Check for an opening brace, either directly after the if or on the next
     # line. If found, this isn't a single-statement conditional.
     if (not Match(r'\s*{', endline[endpos:])
@@ -4458,6 +4781,7 @@ def CheckStyle(filename, clean_lines, linenum, file_extension, nesting_state,
   CheckAltTokens(filename, clean_lines, linenum, error)
   classinfo = nesting_state.InnermostClass()
   if classinfo:
+    CheckClassOrStructNames(filename, clean_lines, classinfo, linenum, error)
     CheckSectionSpacing(filename, clean_lines, classinfo, linenum, error)
 
 
@@ -5799,7 +6123,8 @@ def ShouldCheckNamespaceIndentation(nesting_state, is_namespace_indent_item,
   if IsMacroDefinition(raw_lines_no_comments, linenum):
     return False
 
-  return IsBlockInNameSpace(nesting_state, is_forward_declaration)
+  #return IsBlockInNameSpace(nesting_state, is_forward_declaration)
+  return True
 
 
 # Call this method if the line is directly inside of a namespace.
@@ -6118,6 +6443,10 @@ def ProcessFile(filename, vlevel, extra_check_functions=[]):
         "Skipping input '%s': Can't open for reading\n" % filename)
     _RestoreFilters()
     return
+
+  if Match(r'^[A-Z]', filename) or Match(r'.*[a-z0-9_][A-Z].*', filename):
+      Error(filename, 0, 'readability/file_name', 1,
+          'filename should be named in snake_case style')
 
   # Note, if no dot is found, this will give the entire filename as the ext.
   file_extension = filename[filename.rfind('.') + 1:]

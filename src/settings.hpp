@@ -37,8 +37,8 @@ public:
     type_t mapKeyType() const { return m_MapKeyType; }
     type_t mapValueType() const { return m_MapValueType; }
 
-    template <typename T> void store(T v)   { store_impl(v, static_cast<T*>(nullptr)); }
-    template <typename T> T get() const     { return get_impl(static_cast<T*>(nullptr)); }
+    template <typename T> void store(T v)   { storeImpl(v, static_cast<T*>(nullptr)); }
+    template <typename T> T get() const     { return getImpl(static_cast<T*>(nullptr)); }
 
     // allow push back only in vectors
     void pushBack(const AnyItem &any);
@@ -50,10 +50,10 @@ public:
 
 private:
     // this will be specialized in .cpp
-    template <typename T> T get_impl(T *) const;
+    template <typename T> T getImpl(T *) const;
 
     // this is overload - not specialization
-    template <typename T> std::vector<T> get_impl(std::vector<T> *) const
+    template <typename T> std::vector<T> getImpl(std::vector<T> *) const
     {
         std::vector<T> ret;
         for (size_t i = 0; i < m_Ptr.v_vector->size(); ++i)
@@ -63,7 +63,7 @@ private:
         return ret;
     }
 
-    template <typename K, typename T> std::map<K, T> get_impl(std::map<K, T> *) const
+    template <typename K, typename T> std::map<K, T> getImpl(std::map<K, T> *) const
     {
         std::map<K, T> ret;
         for (auto it = m_Ptr.v_map->begin(); it != m_Ptr.v_map->end(); ++it)
@@ -75,10 +75,10 @@ private:
     }
 
     // this will be specialized in .cpp
-    template <typename T> void store_impl(T v, T *);
+    template <typename T> void storeImpl(T v, T *);
 
     // this is overload - not specialization
-    template <typename T> void store_impl(std::vector<T> v, std::vector<T> *)
+    template <typename T> void storeImpl(std::vector<T> v, std::vector<T> *)
     {
         m_Ptr.v_vector = new std::vector<AnyItem>();
         m_Type = VECTOR;
@@ -98,7 +98,7 @@ private:
         }
     }
 
-    template <typename K, typename T> void store_impl(std::map<K, T> v, std::map<K, T> *)
+    template <typename K, typename T> void storeImpl(std::map<K, T> v, std::map<K, T> *)
     {
         m_Ptr.v_map = new std::map<AnyItem, AnyItem>();
         m_Type = MAP;

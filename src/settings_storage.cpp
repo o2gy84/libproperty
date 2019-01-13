@@ -1,6 +1,6 @@
 #include "settings_storage.hpp"
 
-std::pair<SettingItem&, bool> SettingsStorage::find_option_by_long_key(const std::string &lk) const noexcept
+std::pair<SettingItem&, bool> SettingsStorage::findOptionByLongKey(const std::string &lk) const noexcept
 {
     SettingItem tmp;
     if (lk.empty())
@@ -18,7 +18,7 @@ std::pair<SettingItem&, bool> SettingsStorage::find_option_by_long_key(const std
     return std::pair<SettingItem&, bool>(item, true);
 }
 
-const SettingItem& SettingsStorage::find_option_by_short_key(const std::string &k) const
+const SettingItem& SettingsStorage::findOptionByShortKey(const std::string &k) const
 {
     if (k.empty())
     {
